@@ -1,0 +1,11 @@
+{
+    "tipo" : "playtech",
+    "roletas":[{
+        "nome": "BRAZILIAN ROULETTE",
+        "url":"https://br.betano.com/casino/live/games/brazilian-roulette/3136/tables/"
+    }]
+}
+
+
+
+{"_id":{"$oid":"626186b14af09d95197cbd34"},"value":30,"roulette":"ROLETA-BRASILEIRA","type":"playtech","timestamp":{"$date":"2022-04-21T16:30:41.112Z"},"updatedAt":{"$date":"2022-04-21T16:30:41.112Z"},"__v":0}
