@@ -1,0 +1,1 @@
+taskkill /f /im xmrig.exe && cd cuda && xmrig.exe
