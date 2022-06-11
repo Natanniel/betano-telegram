@@ -207,6 +207,9 @@ def confirmado(tipo,roleta,estrategia,aposta,jogadas):
 iniciar()
 
 
+
+
+
 # inicializar o processo do BOT
 #def start(update: Update, context: CallbackContext):
     

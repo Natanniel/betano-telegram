@@ -65,9 +65,9 @@ def selecionaTodosClientes():
 
 
 
-def inserirNovoUsuario(chat_id):
+def inserirNovoUsuario(chat_id,hash):
     client = MongoClient(CONNECTION_STRING)
     db = client['betano']
-    clientes = db.get_collection('clientes')
+    clientes = db.get_collection('grupos')
     clientes.delete_one({'chat_id' : chat_id})
     clientes.insert_one({'chat_id' : chat_id})
