@@ -38,15 +38,20 @@ def iniciar():
 
                 #iniciar captura dos sinais e analisa a roleta
                 nomeRoleta = roleta['nome']
-                sinais = roleta['resultados']
-
+                sinais = roleta['resultados'][::-1]
+                
                 interromper = False
                 sinaisTratados = []
+                maxSinais = 10
+                sinaisLidos = 0
 
                 for sinal in sinais:
                     if(interromper == False):
                         try:
-                            sinaisTratados.append(sinal['value'])
+                            if sinaisLidos < maxSinais:
+                                sinaisTratados.append(int(sinal['numero']))
+                                sinaisLidos = sinaisLidos + 1
+
                         except:
                             interromper = True
                             resultadoSinal(roletas['nome'],roleta, 5 )
@@ -70,7 +75,7 @@ def iniciar():
                 print(bolas)
 
                 # Verificar se ja existe algum sinal em andamento 
-                sinalEmAndamento = SelecionaSinalExistente(roletas['nome'],roleta.replace('-',' '))
+                sinalEmAndamento = SelecionaSinalExistente(roletas['nome'],nomeRoleta)
                 status = 0
                 jogadasAntiga = 0
 
@@ -180,7 +185,7 @@ def analisando(tipo,roleta,estrategia):
     mensagem = "⏱️ *ANALISANDO MESA*\n\n"
     mensagem += "🎰 *ROLETA* ___"+roleta.replace('-',' ')+"___\n"
     mensagem += "♟ *ESTRATEGIA* ___"+estrategia+"___"
-    telegram.bot.send_message(782375549,mensagem,parse_mode= 'Markdown' )
+    telegram.bot.send_message(-1001568564951,mensagem,parse_mode= 'Markdown' )
     inserirSinal(tipo,roleta.replace('-',' '))
 
 
@@ -201,7 +206,7 @@ def confirmado(tipo,roleta,estrategia,aposta,jogadas):
     mensagem += "🎰 *ROLETA* ___"+roleta.replace('-',' ')+"___\n"
     mensagem += "♟ *ESTRATEGIA* ___"+estrategia+"___\n"
     mensagem += "⚡️*ENTRADA*: ___" + entrada +"___"
-    telegram.bot.send_message(782375549,mensagem,parse_mode= 'Markdown' )
+    telegram.bot.send_message(-1001568564951,mensagem,parse_mode= 'Markdown' )
     confirmaSinal(tipo,roleta,jogadas)
 
 
