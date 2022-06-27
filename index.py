@@ -19,25 +19,26 @@ telegram = Updater("5350481212:AAEpiE5l-qYkEommV2AvQ5oBUS1-qt9jqSQ", use_context
 roletas = []
 
 def iniciar():   
-    mensagem = "*Seja bem-vindo(a)*\n\n" 
     mensagem = "*ATENÇÂO 🚨*\n\n___O Robo esta iniciando a analise das roletas___\n\n"
-    #telegram.bot.send_message(782375549,mensagem,parse_mode= 'Markdown')
+    
+    telegram.bot.send_message(782375549,mensagem,parse_mode= 'Markdown')
   
     sinaisEmAndamento = []
 
     while(True):
 
-        tiposRoletas = SelecionaTodasRoletas()
+      
         
         # Pega todos os tipos de roletas
+        tiposRoletas = SelecionaTodasRoletas()
         for roletas in tiposRoletas:
 
             # pega todas as roletas
             for roleta in roletas['roletas']:
 
                 #iniciar captura dos sinais e analisa a roleta
-                roleta = roleta['nome'].replace(' ','-')
-                sinais = SelecionaTodosSinais(roleta)
+                nomeRoleta = roleta['nome']
+                sinais = roleta['resultados']
 
                 interromper = False
                 sinaisTratados = []

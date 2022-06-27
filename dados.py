@@ -14,8 +14,8 @@ def SelecionaTodasRoletas():
 def SelecionaTodosSinais(roleta):
     client = MongoClient(CONNECTION_STRING)
     db =  client['betano']
-    registros = db.get_collection('registros')
-    return registros.find({'roulette' : roleta}).sort([('created_at', DESCENDING)]).limit(30)
+    registros = db.get_collection('roletas')
+    return registros.find({'roletas.nome' : roleta}).sort([('created_at', DESCENDING)]).limit(30)
 
 
 
@@ -71,3 +71,4 @@ def inserirNovoUsuario(chat_id,hash):
     clientes = db.get_collection('grupos')
     clientes.delete_one({'chat_id' : chat_id})
     clientes.insert_one({'chat_id' : chat_id})
+

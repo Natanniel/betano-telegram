@@ -28,11 +28,11 @@ def recepcionar(update: Update, context: CallbackContext):
             
             time.sleep(10)
             update.message.delete()
-            #inserirNovoUsuario(update.message.chat_id)
+            inserirNovoUsuario(update.message.chat_id)
     except:
         print("CRITICO AQUI " + update.channel_post.chat_id + ' ' + print(update.channel_post.chat_id))
    
-updater.bot.send_message(-1001568564951,"Teste")
+#updater.bot.send_message(-1001568564951,"Teste")
 
 #updater.bot.
    ## 
