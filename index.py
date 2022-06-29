@@ -1,5 +1,6 @@
 
 import time
+from cv2 import log
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup,ReplyKeyboardMarkup 
 from telegram.ext import CallbackQueryHandler
 from telegram.ext.updater import Updater # Conter a chave da api vinda do botfather
@@ -10,7 +11,7 @@ from telegram.ext.messagehandler import MessageHandler #Esta classe Handler é u
 from telegram.ext.filters import Filters # Isso filtrará texto normal, comandos, imagens, etc. de uma mensagem enviada.
 
 from dados import resultadoSinal,inserirSinal,confirmaSinal,SelecionaSinalExistente,inserirNovoUsuario,SelecionaTodasRoletas,SelecionaEstrategias, SelecionaTodosSinais
-from src.estrategia import encontrarEstrategia
+from src.estrategia import encontrarEstrategia,repeticaoVermelho, analisaConfirmacao
 
 print('Telegram bot inicializado')
 
@@ -18,13 +19,21 @@ telegram = Updater("5350481212:AAEpiE5l-qYkEommV2AvQ5oBUS1-qt9jqSQ", use_context
 
 roletas = []
 
+sinaisEmAndamento = [] 
+# 0 - ChatID
+# 1 - MessageID
+# 2 - Sinal
+# 3 - Roleta 
+# 4 - Gale
+# 5 - confirma
+
+
 def iniciar():   
     mensagem = "*ATENÇÂO 🚨*\n\n___O Robo esta iniciando a analise das roletas___\n\n"
     
     telegram.bot.send_message(782375549,mensagem,parse_mode= 'Markdown')
   
-    sinaisEmAndamento = []
-
+    
     while(True):
 
       
@@ -33,37 +42,75 @@ def iniciar():
         tiposRoletas = SelecionaTodasRoletas()
         for roletas in tiposRoletas:
 
+
             # pega todas as roletas
             for roleta in roletas['roletas']:
 
                 #iniciar captura dos sinais e analisa a roleta
                 nomeRoleta = roleta['nome']
                 sinais = roleta['resultados'][::-1]
-                
-                interromper = False
-                sinaisTratados = []
-                maxSinais = 10
-                sinaisLidos = 0
+                analisandoRoleta = False
+                analise = []
 
-                for sinal in sinais:
-                    if(interromper == False):
-                        try:
-                            if sinaisLidos < maxSinais:
-                                sinaisTratados.append(int(sinal['numero']))
-                                sinaisLidos = sinaisLidos + 1
+                #Verifica se a roleta esta em analise
+                for andamento in sinaisEmAndamento:
+                    if andamento[3] == nomeRoleta:
+                        analisandoRoleta = True
+                        analise = andamento
 
-                        except:
-                            interromper = True
-                            resultadoSinal(roletas['nome'],roleta, 5 )
+                if(analisandoRoleta == True):
+                    
+                    entradaConfirmada,apagarMensagem = analisaConfirmacao(analise,sinais)
+
+                    x = 'teste'
+
+
+                    if(apagarMensagem == True):
+                        apagarMensagemEnviada(analise,sinais)
+
+                    if(entradaConfirmada == True):
+                        EnviarMensagemJogadaConfirmada(analise)
+
+                else:  
+                    interromper = False
+                    sinaisTratados = []
+                    maxSinais = 10
+                    sinaisLidos = 0
+
+                    # Iniciar analise de sinais X estrategias 
+                    estrategiaEncontrada = []
+                    estrategias = SelecionaEstrategias()
+
+                    estrategiaEncontrada = repeticaoVermelho(sinais,estrategias)
+                    if(len(estrategiaEncontrada) == 0):
+                        teste = ''
+
+                    if(len(estrategiaEncontrada) > 0):
+                        enviarMensagemAnalisa(estrategiaEncontrada[0], nomeRoleta)
+                  
+
+
+            #    for sinal in sinais:
+
+
+             #       if(interromper == False):
+              #          try:
+               #             if sinaisLidos < maxSinais:
+                #                sinaisTratados.append(int(sinal['numero']))
+                 #               sinaisLidos = sinaisLidos + 1
+
+              #          except:
+              #              interromper = True
+              #              resultadoSinal(roletas['nome'],roleta, 5 )
                 
                   
-                bolas = [0,0,0,0,0,0,0,0,0,0,0,0]
+               # bolas = [0,0,0,0,0,0,0,0,0,0,0,0]
                 
-                for sinal in sinaisTratados:
-                    bolas = encontrarEstrategia(sinal,bolas)
+               # for sinal in sinaisTratados:
+               #     bolas = encontrarEstrategia(sinal,bolas)
 
 
-                estrategias = SelecionaEstrategias()
+               # estrategias = SelecionaEstrategias()
 
                 # LEGENDA DO ARRAY DE BOLAS
                 # 0 - Vermelho | 1 - Preto | 2 - Impar
@@ -72,34 +119,114 @@ def iniciar():
                 # 9 - Coluna 1 | 10 - Coluna 2 | Coluna 3
 
                 # Analisa se bate com alguma estrategia =============================
-                print(bolas)
+                #print(bolas)
 
                 # Verificar se ja existe algum sinal em andamento 
-                sinalEmAndamento = SelecionaSinalExistente(roletas['nome'],nomeRoleta)
-                status = 0
-                jogadasAntiga = 0
+                #sinalEmAndamento = SelecionaSinalExistente(roletas['nome'],nomeRoleta)
+                #status = 0
+                #jogadasAntiga = 0
 
-                for sinalAndamento in sinalEmAndamento:
-                    status = sinalAndamento['status']
-                    if status == 2:
-                        jogadasAntiga = sinalAndamento['jogadas']
+                #for sinalAndamento in sinalEmAndamento:
+                #    status = sinalAndamento['status']
+                #    if status == 2:
+                #        jogadasAntiga = sinalAndamento['jogadas']
                 
                 ## ANALISA OS SINAIS ======================
-                if status == 0:
-                    analisaMesa(roletas['nome'],estrategias,bolas,roleta)
+                #if status == 0:
+                #    analisaMesa(roletas['nome'],estrategias,bolas,roleta)
 
                 ## COMFIRMA ENTRADA ======================
-                if status == 1:
-                    confirmaEntrada(roletas['nome'],estrategias,bolas,roleta,len(sinaisTratados))
+                #if status == 1:
+                #    confirmaEntrada(roletas['nome'],estrategias,bolas,roleta,len(sinaisTratados))
 
                 ## VERIFICA WIN x LOSS ========================
-                if status == 2:
-                    confirmaWin(roletas['nome'],estrategias,bolas,roleta,len(sinaisTratados),jogadasAntiga)
+                #if status == 2:
+                #    confirmaWin(roletas['nome'],estrategias,bolas,roleta,len(sinaisTratados),jogadasAntiga)
 
                
         time.sleep(10)
         #print(roletas)
         
+
+
+
+def enviarMensagemAnalisa(estrategia, nomeRoleta):
+
+
+    nomeEstrategia = retornaEstrategia(estrategia['estrategia'])
+    mensagem = "TESTE \n\n"
+
+
+    mensagem += "⏳ *ANALISANDO MESA* ⏳ \n\n"
+    mensagem += "🎲 *𝑹𝒐𝒍𝒆𝒕𝒂* 🎰: ___" + nomeRoleta +"___\n"
+    mensagem += "♟*𝑬𝒔𝒕𝒓𝒂𝒕𝒆́𝒈𝒊𝒂*: "+ nomeEstrategia
+
+    #mensagem += "🧬 *𝑱𝑶𝑮𝑨𝑫𝑨 𝑪𝑶𝑵𝑭𝑰𝑹𝑴𝑨𝑫𝑨* 🧬\n\n"
+    #mensagem += "🎲 *𝑹𝒐𝒍𝒆𝒕𝒂* 🎰___"+ nomeRoleta+"___\n"
+    #mensagem += "♟ *𝑬𝒔𝒕𝒓𝒂𝒕𝒆́𝒈𝒊𝒂* ___"+nomeEstrategia+"___"
+    x = telegram.bot.send_message(-1001568564951,mensagem,parse_mode= 'Markdown' )
+
+    sinaisEmAndamento.append([-1001568564951,x.message_id,estrategia['estrategia'],nomeRoleta,0,estrategia['confirma'], estrategia['aposta'] ])
+    
+    #inserirSinal(tipo,roleta.replace('-',' '))
+
+def apagarMensagemEnviada(estrategia,sinais):
+    telegram.bot.delete_message(estrategia[0],estrategia[1])
+
+    novaEstrategias = []
+    global sinaisEmAndamento
+    for sinalAndamento in sinaisEmAndamento:
+        if(sinalAndamento[0] != estrategia[0] and sinalAndamento[1] != estrategia[1] and sinalAndamento[2] != estrategia[2] and sinalAndamento[3] != estrategia[3] and sinalAndamento[4] != estrategia[4] and sinalAndamento[5] != estrategia[5]):
+            novaEstrategias.append(sinalAndamento)
+
+    sinaisEmAndamento = novaEstrategias
+
+
+# 0 - ChatID
+# 1 - MessageID
+# 2 - Sinal
+# 3 - Roleta 
+# 4 - Gale
+# 5 - confirma
+
+
+def EnviarMensagemJogadaConfirmada(estrategia):
+    nomeEstrategia = retornaEstrategia(estrategia[2])
+    entrada = reetornaEstrategiaEntrada(estrategia[6])
+
+    mensagem += "🧬 *𝑱𝑶𝑮𝑨𝑫𝑨 𝑪𝑶𝑵𝑭𝑰𝑹𝑴𝑨𝑫𝑨* 🧬\n\n"
+    mensagem += "🎲 *𝑹𝒐𝒍𝒆𝒕𝒂* 🎰___"+estrategia[3] +"___\n"
+    mensagem += "♟ *𝑬𝒔𝒕𝒓𝒂𝒕𝒆́𝒈𝒊𝒂* ___"+nomeEstrategia+"___\n"
+    mensagem += "⚡️𝑬𝒏𝒕𝒓𝒂𝒅𝒂: ___"+ entrada+"___\n\n"
+    mensagem += "___(𝑪𝒐𝒃𝒓𝒊𝒓 𝒐 𝒁𝑬𝑹𝑶 0️⃣)___"
+    
+
+
+def reetornaEstrategiaEntrada(estrategia):
+    entrada = ''
+    if(estrategia == "a-v"):
+        entrada = "Apostar no vermelho"
+
+    return entrada
+
+def retornaEstrategia(estrategia):
+    entrada = ''
+    if(estrategia == "r-v"):
+        entrada = "Repetição do Vermelho"
+
+    return entrada
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def confirmaWin(tipo,estrategias,bolas,roleta,jogadas,jogadasAntiga):

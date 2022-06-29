@@ -51,3 +51,80 @@ def encontrarEstrategia(bola, estrategias):
 
         return estrategias
     
+
+def repeticaoVermelho(bolas,estrategias):
+    
+    resultado = []
+    encontrou = False;
+
+    # Verifica todas estrategias
+    for estrategia in estrategias:
+
+        # Verifica se alguma estrategia ja foi encontrada
+        if encontrou == False:
+
+            # Pega a estrategia
+            cor = estrategia['estrategia'].split('-')[1]
+            if cor == 'v' :
+                
+                contador = 0 # Contagem de repeticoes
+                pararContagem = False # Caso precise parar a contagem da sequencia esse indicador muda para cancelar a estrategia
+
+                #Contar sequencia
+                for bola in bolas:
+                    
+                    if pararContagem == False:
+
+                        if VERMELHOS.__contains__(int(bola['numero'])):
+                            contador = contador + 1
+                            
+                            if estrategia['analise'] == contador:
+                                pararContagem = True
+                                encontrou = True
+                                resultado.append(estrategia)
+
+                        else:
+                            pararContagem = True
+                      
+
+
+             
+            
+
+
+
+    
+    return resultado
+        
+
+
+
+def analisaConfirmacao(estrategia,sinais):
+    # Referencia global
+    # 0 - ChatID  1 - MessageID  2 - Sinal  3 - Roleta  4 - Gale
+    entradaConfirmada = False
+    apagarMensagem = False
+    pararContagem = False
+    contador = 0
+    
+    ## Repeticao vermelho ==================================================================
+    if estrategia[2] == 'r-v':
+        
+        for bola in sinais:
+
+            if pararContagem == False:
+                
+                if VERMELHOS.__contains__(int(bola['numero'])):
+                    contador = contador + 1
+
+                    if estrategia[5] == contador:
+                        pararContagem = True
+                        entradaConfirmada = True
+                        
+                else: 
+                    if(contador == 0): 
+                        apagarMensagem = True
+                    pararContagem = True
+
+
+    return entradaConfirmada,apagarMensagem
