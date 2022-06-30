@@ -62,7 +62,8 @@ def iniciar():
                         analise = andamento
 
                 if(analisandoRoleta == True):
-
+                    # Ja sinalizou analisando mesa 
+                    #  
                     entradaConfirmada, apagarMensagem, Green = analisaConfirmacao(analise, sinais)
 
                     if(apagarMensagem == True):
@@ -97,7 +98,7 @@ def iniciar():
                         enviarMensagemAnalisa(
                             estrategiaEncontrada[0], nomeRoleta)
 
-        time.sleep(20)
+        time.sleep(5)
 
 
 def enviarMensagemAnalisa(estrategia, nomeRoleta):
@@ -113,8 +114,8 @@ def enviarMensagemAnalisa(estrategia, nomeRoleta):
 
     sinaisEmAndamento.append([-1001710936639, x.message_id, estrategia['estrategia'],
                              nomeRoleta, 0, estrategia['confirma'], estrategia['aposta'], 0])
+    
 
-    #inserirSinal(tipo,roleta.replace('-',' '))
 def mensagemLoss(estrategia):
     mensagem = "❌ LOSS!\n\nFaz parte do jogo,\n SEGUE O GERENCIAMENTO."
     telegram.bot.send_message(-1001710936639, mensagem,reply_to_message_id= estrategia[0], parse_mode='Markdown')
@@ -127,7 +128,6 @@ def mensagemLoss(estrategia):
 
     sinaisEmAndamento = novaEstrategias
     excluirSinaisAnteriores(estrategia)
-
 
 def EnviarMensagemVitoria(estrategia):
     
@@ -154,7 +154,6 @@ def apagarMensagemEnviada(estrategia, sinais):
 
     sinaisEmAndamento = novaEstrategias
     
-
 def excluirSinaisAnteriores(estrategia):
     excluirSinais(estrategia[3])
 
@@ -188,12 +187,15 @@ def EnviarMensagemJogadaConfirmada(estrategia):
         else:
             novaEstrategias.append(sinalAndamento)
     sinaisEmAndamento = novaEstrategias
-
+    excluirSinaisAnteriores(estrategia)
 
 def reetornaEstrategiaEntrada(estrategia):
     entrada = ''
     if(estrategia == "a-v"):
         entrada = "Apostar no vermelho"
+    
+    if(estrategia == "a-p"):
+        entrada = "Apostar no preto"
 
     return entrada
 
