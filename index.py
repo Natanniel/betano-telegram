@@ -16,7 +16,7 @@ from telegram.ext.messagehandler import MessageHandler
 # Isso filtrará texto normal, comandos, imagens, etc. de uma mensagem enviada.
 from telegram.ext.filters import Filters
 
-from dados import resultadoSinal,excluirSinais, inserirSinal, confirmaSinal, SelecionaSinalExistente, inserirNovoUsuario, SelecionaTodasRoletas, SelecionaEstrategias, SelecionaTodosSinais
+from dados import resultadoSinal, excluirSinais, inserirSinal, confirmaSinal, SelecionaSinalExistente, inserirNovoUsuario, SelecionaTodasRoletas, SelecionaEstrategias, SelecionaTodosSinais
 from src.estrategia import encontrarEstrategia, repeticaoVermelho, analisaConfirmacao
 
 print('Telegram bot inicializado')
@@ -62,9 +62,10 @@ def iniciar():
                         analise = andamento
 
                 if(analisandoRoleta == True):
-                    # Ja sinalizou analisando mesa 
-                    #  
-                    entradaConfirmada, apagarMensagem, Green = analisaConfirmacao(analise, sinais)
+                    # Ja sinalizou analisando mesa
+                    #
+                    entradaConfirmada, apagarMensagem, Green = analisaConfirmacao(
+                        analise, sinais)
 
                     if(apagarMensagem == True):
                         if(apagarMensagem and analise[7] == 1):
@@ -79,10 +80,6 @@ def iniciar():
                         EnviarMensagemVitoria(analise)
 
                 else:
-                    interromper = False
-                    sinaisTratados = []
-                    maxSinais = 10
-                    sinaisLidos = 0
 
                     # Iniciar analise de sinais X estrategias
                     estrategiaEncontrada = []
@@ -90,9 +87,6 @@ def iniciar():
 
                     estrategiaEncontrada = repeticaoVermelho(
                         sinais, estrategias)
-                   
-                    if(len(estrategiaEncontrada) == 0):
-                        teste = ''
 
                     if(len(estrategiaEncontrada) > 0):
                         enviarMensagemAnalisa(
@@ -114,13 +108,14 @@ def enviarMensagemAnalisa(estrategia, nomeRoleta):
 
     sinaisEmAndamento.append([-1001710936639, x.message_id, estrategia['estrategia'],
                              nomeRoleta, 0, estrategia['confirma'], estrategia['aposta'], 0])
-    
+
 
 def mensagemLoss(estrategia):
     mensagem = "❌ LOSS!\n\nFaz parte do jogo,\n SEGUE O GERENCIAMENTO."
-    telegram.bot.send_message(-1001710936639, mensagem,reply_to_message_id= estrategia[0], parse_mode='Markdown')
+    telegram.bot.send_message(-1001710936639, mensagem,
+                              reply_to_message_id=estrategia[0], parse_mode='Markdown')
     novaEstrategias = []
-    
+
     global sinaisEmAndamento
     for sinalAndamento in sinaisEmAndamento:
         if(sinalAndamento[0] != estrategia[0] and sinalAndamento[1] != estrategia[1] and sinalAndamento[2] != estrategia[2] and sinalAndamento[3] != estrategia[3] and sinalAndamento[4] != estrategia[4] and sinalAndamento[5] != estrategia[5]):
@@ -128,13 +123,15 @@ def mensagemLoss(estrategia):
 
     sinaisEmAndamento = novaEstrategias
     excluirSinaisAnteriores(estrategia)
+
 
 def EnviarMensagemVitoria(estrategia):
-    
+
     mensagem = "✅🤑🟢 WIN !\n\nVEM COM A EASY MONEY 🟢 🙅‍♂️✅"
-    telegram.bot.send_message(-1001710936639, mensagem,reply_to_message_id= estrategia[0], parse_mode='Markdown')
+    telegram.bot.send_message(-1001710936639, mensagem,
+                              reply_to_message_id=estrategia[0], parse_mode='Markdown')
     novaEstrategias = []
-    
+
     global sinaisEmAndamento
     for sinalAndamento in sinaisEmAndamento:
         if(sinalAndamento[0] != estrategia[0] and sinalAndamento[1] != estrategia[1] and sinalAndamento[2] != estrategia[2] and sinalAndamento[3] != estrategia[3] and sinalAndamento[4] != estrategia[4] and sinalAndamento[5] != estrategia[5]):
@@ -142,6 +139,7 @@ def EnviarMensagemVitoria(estrategia):
 
     sinaisEmAndamento = novaEstrategias
     excluirSinaisAnteriores(estrategia)
+
 
 def apagarMensagemEnviada(estrategia, sinais):
     telegram.bot.delete_message(estrategia[0], estrategia[1])
@@ -153,7 +151,8 @@ def apagarMensagemEnviada(estrategia, sinais):
             novaEstrategias.append(sinalAndamento)
 
     sinaisEmAndamento = novaEstrategias
-    
+
+
 def excluirSinaisAnteriores(estrategia):
     excluirSinais(estrategia[3])
 
@@ -189,21 +188,79 @@ def EnviarMensagemJogadaConfirmada(estrategia):
     sinaisEmAndamento = novaEstrategias
     excluirSinaisAnteriores(estrategia)
 
+
 def reetornaEstrategiaEntrada(estrategia):
     entrada = ''
-    if(estrategia == "a-v"):
-        entrada = "Apostar no vermelho"
-    
-    if(estrategia == "a-p"):
-        entrada = "Apostar no preto"
+
+    match estrategia:
+        case 'a-v':
+            entrada = "Apostar no Vermelho"
+        case 'a-p':
+            entrada = "Apostar no Preto"
+        case 'a-np':
+            entrada = "Apostar em Pares"
+        case 'a-ni':
+            entrada = "Repetição em Impares"
+        case 'a-na':
+            entrada = "Apostar numeros Altos"
+        case 'a-nb':
+            entrada = "Apostar numeros Baixos"
+        case 'a-d1':
+            entrada = "Apostar 1° Duzia"
+        case 'a-d2':
+            entrada = "Apostar 2° Duzia"
+        case 'a-d3':
+            entrada = "Apostar 3° Duzia"
+        case 'a-d1d2':
+            entrada = "Apostar 1° e 2° Duzia"
+        case 'a-d2d3':
+            entrada = "Apostar 2° e 3° Duzia"
+        case 'a-d1d3':
+            entrada = "Apostar 1° e 3° Duzia"
+        case 'a-c1':
+            entrada = "Apostar 1° Coluna"
+        case 'a-c2':
+            entrada = "Apostar 2° Coluna"
+        case 'a-c3':
+            entrada = "Apostar 3° Coluna"
+        case 'a-c1dc':
+            entrada = "Apostar 1° e 2° Coluna"
+        case 'a-c2c3':
+            entrada = "Apostar 2° e 3° Coluna"
+        case 'a-c1c3':
+            entrada = "Apostar 1° e 3° Coluna"
 
     return entrada
 
 
 def retornaEstrategia(estrategia):
     entrada = ''
-    if(estrategia == "r-v"):
-        entrada = "Repetição do Vermelho"
+
+    match estrategia:
+        case 'r-v':
+            entrada = "Repetição do Vermelho"
+        case 'r-p':
+            entrada = "Repetição do Preto"
+        case 'r-np':
+            entrada = "Repetição de Pares"
+        case 'r-ni':
+            entrada = "Repetição de Impares"
+        case 'r-na':
+            entrada = "Repetição numeros Altos"
+        case 'r-nb':
+            entrada = "Repetição numeros Baixos"
+        case 'r-d1':
+            entrada = "Repetição 1° Duzia"
+        case 'r-d2':
+            entrada = "Repetição 2° Duzia"
+        case 'r-d3':
+            entrada = "Repetição 3° Duzia"
+        case 'r-c1':
+            entrada = "Repetição 1° Coluna"
+        case 'r-c2':
+            entrada = "Repetição 2° Coluna"
+        case 'r-c3':
+            entrada = "Repetição 3° Coluna"
 
     return entrada
 
