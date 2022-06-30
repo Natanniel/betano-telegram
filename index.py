@@ -108,16 +108,16 @@ def enviarMensagemAnalisa(estrategia, nomeRoleta):
     mensagem += "🎲 *𝑹𝒐𝒍𝒆𝒕𝒂* 🎰: ___" + nomeRoleta + "___\n"
     mensagem += "♟*𝑬𝒔𝒕𝒓𝒂𝒕𝒆́𝒈𝒊𝒂*: " + nomeEstrategia
 
-    x = telegram.bot.send_message(-1001568564951,
+    x = telegram.bot.send_message(-1001710936639,
                                   mensagem, parse_mode='Markdown')
 
-    sinaisEmAndamento.append([-1001568564951, x.message_id, estrategia['estrategia'],
+    sinaisEmAndamento.append([-1001710936639, x.message_id, estrategia['estrategia'],
                              nomeRoleta, 0, estrategia['confirma'], estrategia['aposta'], 0])
 
     #inserirSinal(tipo,roleta.replace('-',' '))
 def mensagemLoss(estrategia):
     mensagem = "❌ LOSS!\n\nFaz parte do jogo,\n SEGUE O GERENCIAMENTO."
-    telegram.bot.send_message(-1001568564951, mensagem,reply_to_message_id= estrategia[0], parse_mode='Markdown')
+    telegram.bot.send_message(-1001710936639, mensagem,reply_to_message_id= estrategia[0], parse_mode='Markdown')
     novaEstrategias = []
     
     global sinaisEmAndamento
@@ -132,7 +132,7 @@ def mensagemLoss(estrategia):
 def EnviarMensagemVitoria(estrategia):
     
     mensagem = "✅🤑🟢 WIN !\n\nVEM COM A EASY MONEY 🟢 🙅‍♂️✅"
-    telegram.bot.send_message(-1001568564951, mensagem,reply_to_message_id= estrategia[0], parse_mode='Markdown')
+    telegram.bot.send_message(-1001710936639, mensagem,reply_to_message_id= estrategia[0], parse_mode='Markdown')
     novaEstrategias = []
     
     global sinaisEmAndamento
@@ -175,7 +175,7 @@ def EnviarMensagemJogadaConfirmada(estrategia):
     mensagem += "♟ *𝑬𝒔𝒕𝒓𝒂𝒕𝒆́𝒈𝒊𝒂* ___"+nomeEstrategia+"___\n"
     mensagem += "⚡️𝑬𝒏𝒕𝒓𝒂𝒅𝒂: ___" + entrada+"___\n\n"
     mensagem += "___(𝑪𝒐𝒃𝒓𝒊𝒓 𝒐 𝒁𝑬𝑹𝑶 0️⃣)___"
-    x = telegram.bot.send_message(-1001568564951,
+    x = telegram.bot.send_message(-1001710936639,
                                   mensagem, parse_mode='Markdown')
 
     novaEstrategias = []
