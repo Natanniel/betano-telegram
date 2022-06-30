@@ -17,7 +17,7 @@ from telegram.ext.messagehandler import MessageHandler
 from telegram.ext.filters import Filters
 
 from dados import resultadoSinal, excluirSinais, inserirSinal, confirmaSinal, SelecionaSinalExistente, inserirNovoUsuario, SelecionaTodasRoletas, SelecionaEstrategias, SelecionaTodosSinais
-from src.estrategia import encontrarEstrategia, repeticaoVermelho, analisaConfirmacao
+from src.estrategia import  repeticaoVermelho, analisaConfirmacao
 
 print('Telegram bot inicializado')
 
