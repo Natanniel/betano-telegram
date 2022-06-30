@@ -101,11 +101,17 @@ def repeticaoVermelho(bolas,estrategias):
 
 def analisaConfirmacao(estrategia,sinais):
     # Referencia global
-    # 0 - ChatID  1 - MessageID  2 - Sinal  3 - Roleta  4 - Gale
+    # 0 - ChatID  1 - MessageID  2 - Sinal  3 - Roleta
+    # 4 - Gale 5 - confirma 6 - Entrada confirmada
+    green = False
     entradaConfirmada = False
     apagarMensagem = False
     pararContagem = False
     contador = 0
+    emMartinGale = False
+    valorGale = 0
+    if( estrategia[7] == 1):
+        emMartinGale = True    
     
     ## Repeticao vermelho ==================================================================
     if estrategia[2] == 'r-v':
@@ -117,14 +123,31 @@ def analisaConfirmacao(estrategia,sinais):
                 if VERMELHOS.__contains__(int(bola['numero'])):
                     contador = contador + 1
 
-                    if estrategia[5] == contador:
+                    if estrategia[5] == contador and emMartinGale == False:
                         pararContagem = True
                         entradaConfirmada = True
+
+                    if estrategia[5] < contador and emMartinGale == True:
+                        green = True
+                        pararContagem = True
                         
                 else: 
+                    ## o valor encontrado nao e o esperado
                     if(contador == 0): 
-                        apagarMensagem = True
-                    pararContagem = True
+                        # ja foi dado entrada e a operacao esta em gale ?
+                        if(emMartinGale):
+                            # o valor de gale atual tem que ser menor que 3
+                            if(valorGale < 3):
+                                valorGale = valorGale + 1
+                           
+                            else:
+                                # LOSS
+                                apagarMensagem = True  
+                                pararContagem = True                                  
+                        else:
+                            # Cancelar analise do sinal
+                            apagarMensagem = True
+                            pararContagem = True
 
 
-    return entradaConfirmada,apagarMensagem
+    return entradaConfirmada,apagarMensagem,green

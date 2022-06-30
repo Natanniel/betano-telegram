@@ -1,5 +1,6 @@
 from pymongo import ASCENDING, DESCENDING, MongoClient
-CONNECTION_STRING = "mongodb+srv://cassino:cassino@cluster0.rjggj.mongodb.net/betano?retryWrites=true&w=majority"
+#CONNECTION_STRING = "mongodb+srv://cassino:cassino@cluster0.rjggj.mongodb.net/betano?retryWrites=true&w=majority"
+CONNECTION_STRING = "mongodb://localhost:27017/betano"
 
 def SelecionaTodasRoletas():
     
@@ -9,6 +10,13 @@ def SelecionaTodasRoletas():
     roletas = db.get_collection('roletas')
     dados = roletas.find()    
     return dados
+
+def excluirSinais(roleta):
+    client = MongoClient(CONNECTION_STRING)
+    db =  client['betano']
+    roletas = db.get_collection('roletas')
+    roletas.update_one({'roletas.nome' : roleta},{"$set": { "roletas.$.resultados": [] }},upsert=True)
+    
 
 
 def SelecionaTodosSinais(roleta):
