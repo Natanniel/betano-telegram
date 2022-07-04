@@ -15,7 +15,7 @@ def excluirSinais(roleta):
     client = MongoClient(CONNECTION_STRING)
     db =  client['betano']
     roletas = db.get_collection('roletas')
-    roletas.update_one({'roletas.nome' : roleta},{"$set": { "roletas.$.resultados": [] }},upsert=True)
+   # roletas.update_one({'roletas.nome' : roleta},{"$set": { "roletas.$.resultados": [] }},upsert=True)
     
 
 
