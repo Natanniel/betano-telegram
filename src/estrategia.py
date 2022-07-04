@@ -66,18 +66,22 @@ def repeticaoVermelho(bolas, estrategias):
             # Contar sequencia
             for bola in bolas:
 
-                if pararContagem == False:
+                try:
 
-                    if VerificarRepeticao(repeticao, bola['numero']):
-                        contador = contador + 1
+                    if pararContagem == False:
 
-                        if estrategia['analise'] == contador:
+                        if VerificarRepeticao(repeticao, bola['numero']):
+                            contador = contador + 1
+
+                            if estrategia['analise'] == contador:
+                                pararContagem = True
+                                encontrou = True
+                                resultado.append(estrategia)
+
+                        else:
                             pararContagem = True
-                            encontrou = True
-                            resultado.append(estrategia)
-
-                    else:
-                        pararContagem = True
+                except:
+                    print 'ALGUM ERRO GRAVE'
 
     return resultado
 
