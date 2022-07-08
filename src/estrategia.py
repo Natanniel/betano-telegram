@@ -67,21 +67,21 @@ def repeticaoVermelho(bolas, estrategias):
             for bola in bolas:
 
                 try:
+                    if bola['numero'] != '':
+                        if pararContagem == False:
+                            
+                            if VerificarRepeticao(repeticao, bola['numero']):
+                                contador = contador + 1
 
-                    if pararContagem == False:
+                                if estrategia['analise'] == contador:
+                                    pararContagem = True
+                                    encontrou = True
+                                    resultado.append(estrategia)
 
-                        if VerificarRepeticao(repeticao, bola['numero']):
-                            contador = contador + 1
-
-                            if estrategia['analise'] == contador:
+                            else:
                                 pararContagem = True
-                                encontrou = True
-                                resultado.append(estrategia)
-
-                        else:
-                            pararContagem = True
-                except:
-                    print 'ALGUM ERRO GRAVE'
+                except Exception as ex :
+                    print('ALGUM ERRO GRAVE - ' + bola['numero'])
 
     return resultado
 
