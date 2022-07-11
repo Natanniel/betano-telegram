@@ -195,7 +195,7 @@ def analisaConfirmacao(estrategia, sinais):
     if(estrategia[7] == 1):
         emMartinGale = True
 
-    apostarNo = estrategia[6]
+    apostarNo = estrategia[8]
 
 #     ACHO QUE ESSA LINHA NAO
  #   # Repeticao vermelho ==================================================================
@@ -209,7 +209,7 @@ def analisaConfirmacao(estrategia, sinais):
             if VerificarApostarNo(estrategia[2], apostarNo, bola['numero'], estrategia[7]):
                 contador = contador + 1
 
-                if estrategia[5] == contador and emMartinGale == False:
+                if estrategia[6] == contador and emMartinGale == False:
                     pararContagem = True
                     entradaConfirmada = True
 
@@ -228,6 +228,7 @@ def analisaConfirmacao(estrategia, sinais):
                             # LOSS
                             apagarMensagem = True
                             pararContagem = True
+                    
                     else:
                         # Cancelar analise do sinal
                         apagarMensagem = True

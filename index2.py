@@ -13,7 +13,9 @@ from dados import inserirNovoUsuario
 
 print('Telegram bot inicialiado')
 
-updater = Updater("5350481212:AAEpiE5l-qYkEommV2AvQ5oBUS1-qt9jqSQ", use_context=True)
+
+updater = Updater("5453075884:AAFIhjRHkLQe0CgDgd_HQjZrJHFQUcl_OqU", use_context=True)
+#updater = Updater("5350481212:AAEpiE5l-qYkEommV2AvQ5oBUS1-qt9jqSQ", use_context=True)
 
 
 def recepcionar(update: Update, context: CallbackContext):
