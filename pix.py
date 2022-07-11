@@ -1,8 +1,19 @@
+from time import sleep
 from pynubank import Nubank, MockHttpClient
 
-nu = Nubank(MockHttpClient())
-nu.authenticate_with_qr_code('some-cpf', 'some-password', 'some-uuid')
 
+nu = Nubank()
+uuid, qr_code = nu.get_qr_code()
+# Nesse momento será printado o QRCode no console
+# Você precisa escanear pelo o seu app do celular
+# Esse menu fica em NU > Perfil > Acesso pelo site
+qr_code.print_ascii(invert=True)
+#input('Enter apos a confirmacao')
+# Somente após escanear o QRCode você pode chamar a linha abaixo
+
+nu.authenticate_with_qr_code('44277200800', 'Pk192168@', uuid)
+
+print(nu.get_account_balance())
 data = nu.get_available_pix_keys()
 
 code = '123' #Código único da tansação é necessário para o get_pix_identifier

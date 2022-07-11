@@ -178,6 +178,8 @@ def EnviarMensagemJogadaConfirmada(estrategia):
                                   mensagem, parse_mode='Markdown')
 
 
+
+
     novaEstrategias = []
     global sinaisEmAndamento
     for sinalAndamento in sinaisEmAndamento:
